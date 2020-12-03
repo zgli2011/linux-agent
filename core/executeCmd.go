@@ -59,11 +59,6 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	arg := []string{"-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
 
-	//fmt.Println(cmd.String())
-	//var stdout, stderr, stdin bytes.Buffer
-	//cmd.Stdout = &stdout
-	//cmd.Stderr = &stderr
-	//cmd.Stdin = &stdin
 	stdin, _ := cmd.StdinPipe()
 	defer stdin.Close()
 
@@ -72,15 +67,15 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 
 	stderr, _ := cmd.StderrPipe()
 	defer stderr.Close()
-
+	cmd.Start()
 	go func() {
 		s := bufio.NewScanner(stdout)
 		for s.Scan() {
 			fmt.Println("程序输出:" + s.Text())
 		}
 	}()
-	
-	cmd.Start()
+
+
 
 
 	//if err := cmd.Run(); err != nil {
