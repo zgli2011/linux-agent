@@ -1,7 +1,6 @@
 package core
 
 import (
-	"bufio"
 	"context"
 	"errors"
 	"fmt"
@@ -59,7 +58,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	arg := []string{"-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
 
-	output, _ = cmd.CombinedOutput()
+	output, _ := cmd.CombinedOutput()
 	fmt.Println(output)
 	//stdin, _ := cmd.StdinPipe()
 	//defer stdin.Close()
