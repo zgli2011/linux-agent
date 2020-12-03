@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -54,10 +55,12 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	name, args := "", ""
 	if cmdInfo.ExecuteUser != "root" {
 		name = "su"
-		args = fmt.Sprintf(" - %s -c cd %s %s", cmdInfo.ExecuteUser, cmdInfo.ExecutePath, cmdInfo.Interpreter)
+		argsList := []string{"-", cmdInfo.ExecuteUser, "-c", "cd", cmdInfo.ExecutePath, cmdInfo.Interpreter}
+		args = strings.Join(argsList, " ")
 	}else{
 		name = "cd"
-		args = fmt.Sprintf("%s %s", cmdInfo.ExecutePath, cmdInfo.Interpreter)
+		argsList := []string{cmdInfo.ExecutePath, cmdInfo.Interpreter}
+		args = strings.Join(argsList, " ")
 	}
 
 	arg := []string{args, cmdInfo.ExecuteScriptParam, scriptPath}
@@ -68,11 +71,13 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	cmd.Stderr = &stderr
 
 	if err := cmd.Start(); err != nil {
-		fmt.Println(err)
+		fmt.Println(stdout.String())
+		fmt.Println(stderr.String())
 		return cmdResult, err
 	}
 	if err := cmd.Wait(); err != nil {
-		fmt.Println(err)
+		fmt.Println(stdout.String())
+		fmt.Println(stderr.String())
 		return cmdResult, err
 	}
 	fmt.Println(string(stdout.Bytes()))

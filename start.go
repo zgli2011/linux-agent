@@ -17,7 +17,7 @@ func main() {
 	cmd := &core.CmdInfo{}
 	cmd.Interpreter = "/bin/bash"
 	cmd.ExecuteUser = "asher"
-	cmd.ExecutePath = "/Users/asher"
+	cmd.ExecutePath = "/home/asher"
 	cmd.ExecuteScript = "ifconfig"
 	cmd.ExecuteScriptParam = ""
 	cmd.ScriptTimeOut = 10
