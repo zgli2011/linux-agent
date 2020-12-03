@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -58,28 +59,25 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	arg := []string{"-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
 
-	stdin, _ := cmd.StdinPipe()
-	stdout, _ := cmd.StdoutPipe()
-	stderr, _ := cmd.StderrPipe()
-	cmd.Start()
-	fmt.Println(stdin, stdout, stderr)
 	//fmt.Println(cmd.String())
-	//var stdout, stderr bytes.Buffer
-	//cmd.Stdout = &stdout
-	//cmd.Stderr = &stderr
-	//
-	//if err := cmd.Start(); err != nil {
-	//	fmt.Println(stdout.String())
-	//	fmt.Println(stderr.String())
-	//	return cmdResult, err
-	//}
-	//if err := cmd.Wait(); err != nil {
-	//	fmt.Println(stdout.String())
-	//	fmt.Println(stderr.String())
-	//	return cmdResult, err
-	//}
-	//fmt.Println(string(stdout.Bytes()))
-	//fmt.Println(string(stderr.Bytes()))
+	var stdout, stderr, stdin bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	cmd.Stdin = &stdin
+
+	if err := cmd.Start(); err != nil {
+		return cmdResult, err
+	}
+	if err := cmd.Wait(); err != nil {
+		return cmdResult, err
+	}
+	fmt.Println("---")
+	fmt.Println(string(stdout.Bytes()))
+	fmt.Println("---")
+	fmt.Println(string(stderr.Bytes()))
+	fmt.Println("---")
+	fmt.Println(string(stdin.Bytes()))
+	fmt.Println("---")
 	//fmt.Println(cmd.ProcessState.ExitCode())
 	//
 	//
