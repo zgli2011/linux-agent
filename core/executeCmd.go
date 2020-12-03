@@ -57,7 +57,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 
 	arg := []string{"-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
-
+	fmt.Println(cmd.String())
 	output, _ := cmd.CombinedOutput()
 	fmt.Println(output)
 	//stdin, _ := cmd.StdinPipe()
