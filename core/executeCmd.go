@@ -64,16 +64,25 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	//cmd.Stdout = &stdout
 	//cmd.Stderr = &stderr
 	//cmd.Stdin = &stdin
+	stdin, _ := cmd.StdinPipe()
+	defer stdin.Close()
 
 	stdout, _ := cmd.StdoutPipe()
 	defer stdout.Close()
 
+	stderr, _ := cmd.StderrPipe()
+	defer stderr.Close()
+
+	go func() {
+		s := bufio.NewScanner(stdout)
+		for s.Scan() {
+			fmt.Println("程序输出:" + s.Text())
+		}
+	}()
+	
 	cmd.Start()
 
-	s := bufio.NewScanner(stdout)
-	for s.Scan() {
-		fmt.Println(s.Text())
-	}
+
 	//if err := cmd.Run(); err != nil {
 	//	fmt.Println(stdout.String())
 	//	return cmdResult, err
