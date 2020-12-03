@@ -1,13 +1,11 @@
 package core
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"linux-agent/common"
-	"log"
 	"os"
 	"os/exec"
 	"os/user"
@@ -61,17 +59,17 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
 
 	//fmt.Println(cmd.String())
-	var stdout, stderr, stdin bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	cmd.Stdin = &stdin
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
-	}
-	fmt.Println(string(stdout.Bytes()), string(stderr.Bytes()))
+	//var stdout, stderr, stdin bytes.Buffer
+	//cmd.Stdout = &stdout
+	//cmd.Stderr = &stderr
+	//cmd.Stdin = &stdin
+
+	stdout, _ := cmd.StdoutPipe()
+	defer stdout.Close()
+
+	cmd.Start()
+
+	fmt.Println(stdout)
 	//if err := cmd.Run(); err != nil {
 	//	fmt.Println(stdout.String())
 	//	return cmdResult, err
