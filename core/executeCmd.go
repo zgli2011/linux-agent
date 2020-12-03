@@ -54,18 +54,16 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 
 	name, args := "", ""
 	if cmdInfo.ExecuteUser != "root" {
-		name = "su"
-		argsList := []string{"-", cmdInfo.ExecuteUser, "-c", "'", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter}
+		argsList := []string{"su -", cmdInfo.ExecuteUser, "-c", "'", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter}
 		args = strings.Join(argsList, " ")
 	}else{
-		name = "cd"
-		argsList := []string{cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter}
+		argsList := []string{"cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter}
 		args = strings.Join(argsList, " ")
 	}
 
 	arg := []string{args, scriptPath, cmdInfo.ExecuteScriptParam, "'"}
 	fmt.Println(name, arg)
-	cmd := exec.CommandContext(cmdCTX, name, arg...)
+	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
 	fmt.Println(cmd.String())
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
