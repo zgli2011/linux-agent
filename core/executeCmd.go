@@ -66,17 +66,17 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	cmd.Stdin = &stdin
 
 	if err := cmd.Start(); err != nil {
+		fmt.Println(stdout.String())
 		return cmdResult, err
 	}
 	if err := cmd.Wait(); err != nil {
+		fmt.Println(stderr.String())
 		return cmdResult, err
 	}
 	fmt.Println("---")
 	fmt.Println(stdout.String())
 	fmt.Println("---")
 	fmt.Println(stderr.String())
-	fmt.Println("---")
-	fmt.Println(stdin.String())
 	fmt.Println("---")
 	//fmt.Println(cmd.ProcessState.ExitCode())
 	//
