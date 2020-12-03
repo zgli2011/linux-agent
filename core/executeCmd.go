@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"linux-agent/common"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
@@ -64,22 +65,28 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	cmd.Stdin = &stdin
-
-	if err := cmd.Run(); err != nil {
-		fmt.Println(stdout.String())
-		return cmdResult, err
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
-	fmt.Println("---")
-	fmt.Println(stdout.String())
-	fmt.Println("---")
-	fmt.Println(stderr.String())
-	fmt.Println("---")
+	fmt.Println(string(stdout.Bytes()), string(stderr.Bytes()))
+	//if err := cmd.Run(); err != nil {
+	//	fmt.Println(stdout.String())
+	//	return cmdResult, err
+	//}
+	//fmt.Println("---")
+	//fmt.Println(stdout.String())
+	//fmt.Println("---")
+	//fmt.Println(stderr.String())
+	//fmt.Println("---")
 	//fmt.Println(cmd.ProcessState.ExitCode())
 	//
 	//
-	cmdResult.exitCode = cmd.ProcessState.ExitCode()
-	cmdResult.stdout = stdout.String()
-	cmdResult.stderr = stderr.String()
+	//cmdResult.exitCode = cmd.ProcessState.ExitCode()
+	//cmdResult.stdout = stdout.String()
+	//cmdResult.stderr = stderr.String()
 
 	return cmdResult, nil
 }
