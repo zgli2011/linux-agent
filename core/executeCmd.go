@@ -65,7 +65,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	cmd.Stderr = &stderr
 	cmd.Stdin = &stdin
 
-	if err := cmd.Start(); err != nil {
+	if err := cmd.Run(); err != nil {
 		fmt.Println(stdout.String())
 		return cmdResult, err
 	}
