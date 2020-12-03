@@ -72,11 +72,11 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 		return cmdResult, err
 	}
 	fmt.Println("---")
-	fmt.Println(string(stdout.Bytes()))
+	fmt.Println(stdout.String())
 	fmt.Println("---")
-	fmt.Println(string(stderr.Bytes()))
+	fmt.Println(stderr.String())
 	fmt.Println("---")
-	fmt.Println(string(stdin.Bytes()))
+	fmt.Println(stdin.String())
 	fmt.Println("---")
 	//fmt.Println(cmd.ProcessState.ExitCode())
 	//
