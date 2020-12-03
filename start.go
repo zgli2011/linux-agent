@@ -18,7 +18,7 @@ func main() {
 	cmd.Interpreter = "/bin/bash"
 	cmd.ExecuteUser = "asher"
 	cmd.ExecutePath = "/home/asher"
-	cmd.ExecuteScript = "ifconfig && echo $1 $2"
+	cmd.ExecuteScript = "ifconfig && echo $1 $2 && whoami"
 	cmd.ExecuteScriptParam = "p1 p2"
 	cmd.ScriptTimeOut = 10
 	fmt.Println(cmd.ExecuteCMD())

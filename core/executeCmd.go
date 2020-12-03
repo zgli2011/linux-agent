@@ -9,8 +9,8 @@ import (
 	"linux-agent/common"
 	"os"
 	"os/exec"
+	"os/user"
 	"path"
-	"strings"
 	"time"
 )
 
@@ -52,18 +52,12 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 		cmdInfo.ExecuteUser = "root"
 	}
 
-	name, args := " ", ""
 	if cmdInfo.ExecuteUser != "root" {
-		argsList := []string{"su -", cmdInfo.ExecuteUser, "-c", "'", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter}
-		args = strings.Join(argsList, " ")
-	}else {
-		argsList := []string{"cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter}
-		args = strings.Join(argsList, " ")
+		user.Lookup(cmdInfo.ExecuteUser)
 	}
 
-	arg := []string{args, scriptPath, cmdInfo.ExecuteScriptParam, "'"}
-	fmt.Println(name, arg)
-	cmd := exec.CommandContext(cmdCTX, name, arg...)
+	arg := []string{cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
+	cmd := exec.CommandContext(cmdCTX, "cd", arg...)
 	fmt.Println(cmd.String())
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
