@@ -69,10 +69,6 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 		fmt.Println(stdout.String())
 		return cmdResult, err
 	}
-	if err := cmd.Wait(); err != nil {
-		fmt.Println(stderr.String())
-		return cmdResult, err
-	}
 	fmt.Println("---")
 	fmt.Println(stdout.String())
 	fmt.Println("---")
