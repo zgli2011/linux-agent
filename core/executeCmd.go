@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"linux_agent/common"
+	"linux-agent/common"
 	"os"
 	"os/exec"
 	"path"

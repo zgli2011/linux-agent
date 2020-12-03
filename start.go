@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"linux_agent/core"
+	"linux-agent/core"
 )
 func main() {
 	//orig := "http://c.biancheng.net/golang/"
