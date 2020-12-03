@@ -59,21 +59,23 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	arg := []string{"-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
 
-	stdin, _ := cmd.StdinPipe()
-	defer stdin.Close()
-
-	stdout, _ := cmd.StdoutPipe()
-	defer stdout.Close()
-
-	stderr, _ := cmd.StderrPipe()
-	defer stderr.Close()
-	cmd.Start()
-	go func() {
-		s := bufio.NewScanner(stdout)
-		for s.Scan() {
-			fmt.Println("程序输出:" + s.Text())
-		}
-	}()
+	output, _ = cmd.CombinedOutput()
+	fmt.Println(output)
+	//stdin, _ := cmd.StdinPipe()
+	//defer stdin.Close()
+	//
+	//stdout, _ := cmd.StdoutPipe()
+	//defer stdout.Close()
+	//
+	//stderr, _ := cmd.StderrPipe()
+	//defer stderr.Close()
+	//cmd.Start()
+	//go func() {
+	//	s := bufio.NewScanner(stdout)
+	//	for s.Scan() {
+	//		fmt.Println("程序输出:" + s.Text())
+	//	}
+	//}()
 
 
 
