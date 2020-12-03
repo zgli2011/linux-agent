@@ -57,7 +57,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	}
 
 	arg := []string{"cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
-	cmd := exec.CommandContext(cmdCTX, "/bin/bash -c", arg...)
+	cmd := exec.CommandContext(cmdCTX, "sh -c", arg...)
 	fmt.Println(cmd.String())
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
