@@ -55,11 +55,11 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	name, args := "", ""
 	if cmdInfo.ExecuteUser != "root" {
 		name = "su"
-		argsList := []string{"-", cmdInfo.ExecuteUser, "-c", "cd", cmdInfo.ExecutePath, cmdInfo.Interpreter}
+		argsList := []string{"-", cmdInfo.ExecuteUser, "-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter}
 		args = strings.Join(argsList, " ")
 	}else{
 		name = "cd"
-		argsList := []string{cmdInfo.ExecutePath, cmdInfo.Interpreter}
+		argsList := []string{cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter}
 		args = strings.Join(argsList, " ")
 	}
 
