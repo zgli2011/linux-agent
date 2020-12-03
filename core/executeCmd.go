@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
@@ -69,7 +70,10 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 
 	cmd.Start()
 
-	fmt.Println(stdout)
+	s := bufio.NewScanner(stdout)
+	for s.Scan() {
+		fmt.Println(s.Text())
+	}
 	//if err := cmd.Run(); err != nil {
 	//	fmt.Println(stdout.String())
 	//	return cmdResult, err
