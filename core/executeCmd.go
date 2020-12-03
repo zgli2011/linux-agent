@@ -56,8 +56,8 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 		user.Lookup(cmdInfo.ExecuteUser)
 	}
 
-	arg := []string{cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
-	cmd := exec.CommandContext(cmdCTX, "cd", arg...)
+	arg := []string{"cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
+	cmd := exec.CommandContext(cmdCTX, "/bin/bash -c", arg...)
 	fmt.Println(cmd.String())
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
