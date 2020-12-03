@@ -64,6 +64,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	}
 
 	arg := []string{args, scriptPath, cmdInfo.ExecuteScriptParam, "'"}
+	fmt.Println(name, arg)
 	cmd := exec.CommandContext(cmdCTX, name, arg...)
 	fmt.Println(cmd.String())
 	var stdout, stderr bytes.Buffer
