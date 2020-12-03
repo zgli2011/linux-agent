@@ -77,9 +77,9 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	//fmt.Println(cmd.ProcessState.ExitCode())
 	//
 	//
-	//cmdResult.exitCode = cmd.ProcessState.ExitCode()
-	//cmdResult.stdout = stdout.String()
-	//cmdResult.stderr = stderr.String()
+	cmdResult.exitCode = cmd.ProcessState.ExitCode()
+	cmdResult.stdout = stdout.String()
+	cmdResult.stderr = stderr.String()
 
 	return cmdResult, nil
 }
