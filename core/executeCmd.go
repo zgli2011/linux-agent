@@ -49,7 +49,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	defer cancel()
 
 	args := ""
-	name := "sh"
+	name := "bash"
 	if cmdInfo.ExecuteUser != "root" {
 		user.Lookup(cmdInfo.ExecuteUser)
 		//name = "su"
