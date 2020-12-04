@@ -52,7 +52,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 		args = "su - " + cmdInfo.ExecuteUser
 	}
 
-	arg := []string{args, "-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
+	arg := []string{"-c", args, "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
 	fmt.Println(cmd.String())
 	var buf bytes.Buffer
