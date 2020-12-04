@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -10,24 +11,10 @@ import (
 	"os/exec"
 	"os/user"
 	"path"
+	"time"
 )
 
-type CmdInfo struct {
-	Interpreter        string
-	ExecuteUser        string
-	ExecutePath        string
-	ExecuteScript      string
-	ExecuteScriptParam string
-	ScriptTimeOut      int64
-}
-
-type CmdResult struct {
-	exitCode int
-	stdout string
-	stderr string
-}
-
-func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
+func (cmdInfo *CmdInfo) ExecuteCMDTime() (CmdResult, error) {
 	var cmdResult CmdResult
 	// 1、检查脚本执行路径
 	if common.CheckDir(cmdInfo.ExecutePath) == false{
@@ -42,6 +29,10 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 		return cmdResult, err
 	}
 
+	// 3、开启脚本执行
+	cmdCTX, cancel := context.WithTimeout(context.Background(), time.Second * time.Duration(cmdInfo.ScriptTimeOut))
+	defer cancel()
+
 	args := ""
 	name := "bash"
 	if cmdInfo.ExecuteUser != "root" {
@@ -51,7 +42,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	}
 
 	arg := []string{args, "-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
-	cmd := exec.Command(name, arg...)
+	cmd := exec.CommandContext(cmdCTX, name, arg...)
 	fmt.Println(cmd.String())
 	var buf bytes.Buffer
 	cmd.Stdout = &buf
