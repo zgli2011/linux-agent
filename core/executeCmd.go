@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"linux-agent/common"
+	"os"
 	"os/exec"
 	"path"
 	"time"
@@ -36,7 +37,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 
 	// 2、将脚本内容写入文件
 	scriptPath := path.Join("/tmp/", common.RandString(9))
-	//defer os.RemoveAll(scriptPath)
+	defer os.RemoveAll(scriptPath)
 
 	if err := ioutil.WriteFile(scriptPath, []byte(cmdInfo.ExecuteScript), 0755); err!=nil{
 		return cmdResult, err
@@ -47,12 +48,14 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	defer cancel()
 
 	args := ""
+	name := "sh"
 	if cmdInfo.ExecuteUser != "root" {
-		args = "su - " + cmdInfo.ExecuteUser
+		name = "su"
+		args = "- " + cmdInfo.ExecuteUser
 	}
 
-	arg := []string{"-c", args, "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
-	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
+	arg := []string{args, "-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
+	cmd := exec.CommandContext(cmdCTX, name, arg...)
 	fmt.Println(cmd.String())
 	var buf bytes.Buffer
 	cmd.Stdout = &buf
