@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -46,10 +47,6 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	cmdCTX, cancel := context.WithTimeout(context.Background(), time.Second * time.Duration(cmdInfo.ScriptTimeOut))
 	defer cancel()
 
-	if cmdInfo.ExecuteUser == "" {
-		cmdInfo.ExecuteUser = "root"
-	}
-
 	args := ""
 	if cmdInfo.ExecuteUser != "root" {
 		args = "su - " + cmdInfo.ExecuteUser
@@ -57,18 +54,19 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 
 	arg := []string{args, "-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
-	fmt.Println(cmd.String())
-	output, _ := cmd.CombinedOutput()
-	fmt.Println(output)
-	//stdin, _ := cmd.StdinPipe()
-	//defer stdin.Close()
-	//
-	//stdout, _ := cmd.StdoutPipe()
-	//defer stdout.Close()
-	//
-	//stderr, _ := cmd.StderrPipe()
-	//defer stderr.Close()
-	//cmd.Start()
+	var buf bytes.Buffer
+	cmd.Stdout = &buf
+	cmd.Stderr = &buf
+
+	if err := cmd.Start(); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf(string(buf.Bytes()))
+
+	if err := cmd.Wait(); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf(string(buf.Bytes()))
 	//go func() {
 	//	s := bufio.NewScanner(stdout)
 	//	for s.Scan() {
