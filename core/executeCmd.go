@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"linux-agent/common"
-	"os"
 	"os/exec"
 	"path"
 	"time"
@@ -37,7 +36,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 
 	// 2、将脚本内容写入文件
 	scriptPath := path.Join("/tmp/", common.RandString(9))
-	defer os.RemoveAll(scriptPath)
+	//defer os.RemoveAll(scriptPath)
 
 	if err := ioutil.WriteFile(scriptPath, []byte(cmdInfo.ExecuteScript), 0755); err!=nil{
 		return cmdResult, err
