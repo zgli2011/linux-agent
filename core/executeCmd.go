@@ -54,6 +54,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 
 	arg := []string{args, "-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
 	cmd := exec.CommandContext(cmdCTX, "sh", arg...)
+	fmt.Println(cmd.String())
 	var buf bytes.Buffer
 	cmd.Stdout = &buf
 	cmd.Stderr = &buf
