@@ -55,6 +55,10 @@ func (cmdInfo *CmdInfo) ExecuteCMDTimeOut() (CmdResult, error) {
 	cmd.Stdout = &buf
 	cmd.Stderr = &buf
 
+	if cmdCTX.Err() == context.DeadlineExceeded {
+		cmdResult.exitCode = -2
+	}
+
 	if err := cmd.Start(); err != nil {
 		fmt.Println(err)
 	}
