@@ -32,7 +32,7 @@ func (cmdInfo *CmdInfo) ExecuteCMDTimeOut() (CmdResult, error) {
 	}
 
 	// 3、开启脚本执行
-	cmdCTX, cancel := context.WithTimeout(context.Background(), time.Second * 2)
+	cmdCTX, cancel := context.WithTimeout(context.Background(), time.Second * time.Duration(cmdInfo.ScriptTimeOut))
 	defer cancel()
 
 	cmd := exec.CommandContext(cmdCTX, cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam)
@@ -55,15 +55,17 @@ func (cmdInfo *CmdInfo) ExecuteCMDTimeOut() (CmdResult, error) {
 	cmd.Stdout = &buf
 	cmd.Stderr = &buf
 
-	if cmdCTX.Err() == context.DeadlineExceeded {
-		cmdResult.exitCode = -2
-		fmt.Println("超时了")
-	}
+
 
 	if err := cmd.Start(); err != nil {
 		fmt.Println(err)
 	}
 	cmdResult.stdout = string(buf.Bytes())
+
+	if cmdCTX.Err() == context.DeadlineExceeded {
+		cmdResult.exitCode = -2
+		fmt.Println("超时了")
+	}
 
 	if err := cmd.Wait(); err != nil {
 		fmt.Println(err)
