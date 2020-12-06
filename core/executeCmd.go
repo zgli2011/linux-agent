@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"linux-agent/common"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
 	"path"
+	"strconv"
+	"syscall"
 )
 
 type CmdInfo struct {
@@ -42,16 +45,23 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 		return cmdResult, err
 	}
 
-	args := ""
-	name := "bash"
-	if cmdInfo.ExecuteUser != "root" {
-		user.Lookup(cmdInfo.ExecuteUser)
-		//name = "su"
-		//args = "- " + cmdInfo.ExecuteUser
-	}
+	cmd := exec.Command(cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam)
 
-	arg := []string{args, "-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
-	cmd := exec.Command(name, arg...)
+	// 切换用户
+	if cmdInfo.ExecuteUser != "root" {
+		user, err :=user.Lookup(cmdInfo.ExecuteUser)
+		if err == nil {
+			log.Printf("uid=%s,gid=%s", user.Uid, user.Gid)
+			uid, _ := strconv.Atoi(user.Uid)
+			gid, _ := strconv.Atoi(user.Gid)
+
+			cmd.SysProcAttr = &syscall.SysProcAttr{}
+			cmd.SysProcAttr.Credential = &syscall.Credential{Uid: uint32(uid), Gid: uint32(gid)}
+		}
+	}
+	
+	cmd.Dir = cmdInfo.ExecutePath
+
 	fmt.Println(cmd.String())
 	var buf bytes.Buffer
 	cmd.Stdout = &buf
