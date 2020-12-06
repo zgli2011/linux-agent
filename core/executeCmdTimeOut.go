@@ -32,7 +32,7 @@ func (cmdInfo *CmdInfo) ExecuteCMDTimeOut() (CmdResult, error) {
 	}
 
 	// 3、开启脚本执行
-	cmdCTX, cancel := context.WithTimeout(context.Background(), time.Second * time.Duration(cmdInfo.ScriptTimeOut))
+	cmdCTX, cancel := context.WithTimeout(context.Background(), time.Second * 2)
 	defer cancel()
 
 	cmd := exec.CommandContext(cmdCTX, cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam)
