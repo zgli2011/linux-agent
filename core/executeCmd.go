@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"linux-agent/common"
-	"log"
 	"os"
 	"os/exec"
 	"os/user"
@@ -15,20 +14,6 @@ import (
 	"syscall"
 )
 
-type CmdInfo struct {
-	Interpreter        string
-	ExecuteUser        string
-	ExecutePath        string
-	ExecuteScript      string
-	ExecuteScriptParam string
-	ScriptTimeOut      int64
-}
-
-type CmdResult struct {
-	exitCode int
-	stdout string
-	stderr string
-}
 
 func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	var cmdResult CmdResult
@@ -52,7 +37,6 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	if cmdInfo.ExecuteUser != "root" {
 		user, err :=user.Lookup(cmdInfo.ExecuteUser)
 		if err == nil {
-			log.Printf("uid=%s,gid=%s", user.Uid, user.Gid)
 			uid, _ := strconv.Atoi(user.Uid)
 			gid, _ := strconv.Atoi(user.Gid)
 
@@ -60,7 +44,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 			cmd.SysProcAttr.Credential = &syscall.Credential{Uid: uint32(uid), Gid: uint32(gid)}
 		}
 	}
-
+	// 切换脚本执行目录
 	cmd.Dir = cmdInfo.ExecutePath
 
 	fmt.Println(cmd.String())

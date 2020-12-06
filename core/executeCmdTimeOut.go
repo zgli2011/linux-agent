@@ -11,10 +11,12 @@ import (
 	"os/exec"
 	"os/user"
 	"path"
+	"strconv"
+	"syscall"
 	"time"
 )
 
-func (cmdInfo *CmdInfo) ExecuteCMDTime() (CmdResult, error) {
+func (cmdInfo *CmdInfo) ExecuteCMDTimeOut() (CmdResult, error) {
 	var cmdResult CmdResult
 	// 1、检查脚本执行路径
 	if common.CheckDir(cmdInfo.ExecutePath) == false{
@@ -33,16 +35,21 @@ func (cmdInfo *CmdInfo) ExecuteCMDTime() (CmdResult, error) {
 	cmdCTX, cancel := context.WithTimeout(context.Background(), time.Second * time.Duration(cmdInfo.ScriptTimeOut))
 	defer cancel()
 
-	args := ""
-	name := "bash"
+	cmd := exec.CommandContext(cmdCTX, cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam)
+	// 切换用户
 	if cmdInfo.ExecuteUser != "root" {
-		user.Lookup(cmdInfo.ExecuteUser)
-		//name = "su"
-		//args = "- " + cmdInfo.ExecuteUser
-	}
+		user, err :=user.Lookup(cmdInfo.ExecuteUser)
+		if err == nil {
+			uid, _ := strconv.Atoi(user.Uid)
+			gid, _ := strconv.Atoi(user.Gid)
 
-	arg := []string{args, "-c", "cd", cmdInfo.ExecutePath, "&&", cmdInfo.Interpreter, scriptPath, cmdInfo.ExecuteScriptParam}
-	cmd := exec.CommandContext(cmdCTX, name, arg...)
+			cmd.SysProcAttr = &syscall.SysProcAttr{}
+			cmd.SysProcAttr.Credential = &syscall.Credential{Uid: uint32(uid), Gid: uint32(gid)}
+		}
+	}
+	// 切换脚本执行目录
+	cmd.Dir = cmdInfo.ExecutePath
+
 	fmt.Println(cmd.String())
 	var buf bytes.Buffer
 	cmd.Stdout = &buf
@@ -51,37 +58,13 @@ func (cmdInfo *CmdInfo) ExecuteCMDTime() (CmdResult, error) {
 	if err := cmd.Start(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf(string(buf.Bytes()))
+	cmdResult.stdout = string(buf.Bytes())
 
 	if err := cmd.Wait(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf(string(buf.Bytes()))
-	//go func() {
-	//	s := bufio.NewScanner(stdout)
-	//	for s.Scan() {
-	//		fmt.Println("程序输出:" + s.Text())
-	//	}
-	//}()
+	cmdResult.stderr = string(buf.Bytes())
 
-
-
-
-	//if err := cmd.Run(); err != nil {
-	//	fmt.Println(stdout.String())
-	//	return cmdResult, err
-	//}
-	//fmt.Println("---")
-	//fmt.Println(stdout.String())
-	//fmt.Println("---")
-	//fmt.Println(stderr.String())
-	//fmt.Println("---")
-	//fmt.Println(cmd.ProcessState.ExitCode())
-	//
-	//
-	//cmdResult.exitCode = cmd.ProcessState.ExitCode()
-	//cmdResult.stdout = stdout.String()
-	//cmdResult.stderr = stderr.String()
-
+	cmdResult.exitCode = cmd.ProcessState.ExitCode()
 	return cmdResult, nil
 }
