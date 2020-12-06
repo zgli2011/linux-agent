@@ -57,6 +57,7 @@ func (cmdInfo *CmdInfo) ExecuteCMDTimeOut() (CmdResult, error) {
 
 	if cmdCTX.Err() == context.DeadlineExceeded {
 		cmdResult.exitCode = -2
+		fmt.Println("超时了")
 	}
 
 	if err := cmd.Start(); err != nil {
