@@ -59,7 +59,7 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 			cmd.SysProcAttr.Credential = &syscall.Credential{Uid: uint32(uid), Gid: uint32(gid)}
 		}
 	}
-	
+
 	cmd.Dir = cmdInfo.ExecutePath
 
 	fmt.Println(cmd.String())
