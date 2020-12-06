@@ -32,6 +32,7 @@ type CmdResult struct {
 
 func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	var cmdResult CmdResult
+	cmdResult.exitCode = -1
 	// 1、检查脚本执行路径
 	if common.CheckDir(cmdInfo.ExecutePath) == false{
 		return cmdResult, errors.New("要执行的目录不存在")
@@ -70,37 +71,13 @@ func (cmdInfo *CmdInfo) ExecuteCMD() (CmdResult, error) {
 	if err := cmd.Start(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf(string(buf.Bytes()))
+	cmdResult.stdout = string(buf.Bytes())
 
 	if err := cmd.Wait(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf(string(buf.Bytes()))
-	//go func() {
-	//	s := bufio.NewScanner(stdout)
-	//	for s.Scan() {
-	//		fmt.Println("程序输出:" + s.Text())
-	//	}
-	//}()
+	cmdResult.stderr = string(buf.Bytes())
 
-
-
-
-	//if err := cmd.Run(); err != nil {
-	//	fmt.Println(stdout.String())
-	//	return cmdResult, err
-	//}
-	//fmt.Println("---")
-	//fmt.Println(stdout.String())
-	//fmt.Println("---")
-	//fmt.Println(stderr.String())
-	//fmt.Println("---")
-	//fmt.Println(cmd.ProcessState.ExitCode())
-	//
-	//
-	//cmdResult.exitCode = cmd.ProcessState.ExitCode()
-	//cmdResult.stdout = stdout.String()
-	//cmdResult.stderr = stderr.String()
-
+	cmdResult.exitCode = cmd.ProcessState.ExitCode()
 	return cmdResult, nil
 }
