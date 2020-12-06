@@ -27,7 +27,7 @@ func main() {
 	cmdTime.Interpreter = "/bin/bash"
 	cmdTime.ExecuteUser = "asher"
 	cmdTime.ExecutePath = "/opt"
-	cmdTime.ExecuteScript = "sleep 10"
+	cmdTime.ExecuteScript = "sleep 1"
 	cmdTime.ExecuteScriptParam = ""
 	cmdTime.ScriptTimeOut = 2
 	fmt.Println(cmdTime.ExecuteCMDTimeOut())
