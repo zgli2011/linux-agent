@@ -55,8 +55,6 @@ func (cmdInfo *CmdInfo) ExecuteCMDTimeOut() (CmdResult, error) {
 	cmd.Stdout = &buf
 	cmd.Stderr = &buf
 
-
-
 	if err := cmd.Start(); err != nil {
 		fmt.Println(err)
 	}
@@ -67,11 +65,14 @@ func (cmdInfo *CmdInfo) ExecuteCMDTimeOut() (CmdResult, error) {
 	}
 	cmdResult.stderr = string(buf.Bytes())
 
+
+
 	if cmdCTX.Err() == context.DeadlineExceeded {
 		cmdResult.exitCode = -2
 		fmt.Println("超时了")
+	}else if cmdCTX.Err() == nil{
+		cmdResult.exitCode = cmd.ProcessState.ExitCode()
 	}
 
-	cmdResult.exitCode = cmd.ProcessState.ExitCode()
 	return cmdResult, nil
 }
