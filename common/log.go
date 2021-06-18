@@ -16,11 +16,14 @@ func NewLogger() *logrus.Logger {
 	if Log != nil {
 		return Log
 	}
+	// 此处初始化配置文件
 	err := config.LoadConfiguration()
 	if err != nil {
 		log.Fatal("load config failed")
 	}
+	// 获取日志相关的配置信息
 	log_config := config.GetConfiguration().System.Log
+	// 开启日志切割
 	writer, err := rotatelogs.New(
 		log_config.Path+".%Y%m%d%H%M",
 		rotatelogs.WithLinkName(log_config.Path),                                      // 生成软链，指向最新日志文件
@@ -39,6 +42,7 @@ func NewLogger() *logrus.Logger {
 		"fatal": logrus.FatalLevel,
 		"panic": logrus.PanicLevel,
 	}
+	// 设置日志级别
 	Log.SetLevel(log_level_map[log_config.Level])
 	Log.Hooks.Add(
 		lfshook.NewHook(
@@ -57,6 +61,7 @@ func NewLogger() *logrus.Logger {
 	return Log
 }
 
+// init函数先于main函数自动执行
 func init() {
 	Log = NewLogger()
 }
