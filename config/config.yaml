@@ -1,0 +1,16 @@
+system:
+  http_request_timeout: 10
+  command_timeout: 10
+  version: 1.0
+  log:
+    path: /tmp/agent.log
+    level: info
+    max_age: 168
+    rotation_time: 24
+
+database:
+  host: 1.1.1.1
+  port: 5432
+  username: root
+  password: 1
+  

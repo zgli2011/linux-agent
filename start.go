@@ -1,34 +1,48 @@
 package main
 
 import (
-	"fmt"
-	"linux-agent/core"
+	"agent/web"
+
+	"github.com/gin-gonic/gin"
 )
+
+func gin_web() {
+	router := gin.Default()
+	// router.Use(task_info())
+	router.POST("/agent/current_config", web.CurrentConfigView)        // 查询当前配置
+	router.POST("/agent/script/sync", web.ScriptSyncView)              // 同步任务
+	router.POST("/agent/script/async", web.ScriptAsyncView)            // 异步任务
+	router.POST("/agent/file/transfer", web.FileTransferView)          // 文件传输
+	router.DELETE("/agent/script/async", web.TerminateScriptAsyncView) // 拦截异步任务
+	// router.POST("/agent/crontab", web.CreateCrontabView)               // 新建本地crontab任务
+	// router.DELETE("/agent/crontab", web.DeleteCrontabView)             // 删除本地crontab任务
+	// router.PUT("/agent/crontab", web.ModifyCrontabView)                // 修改本地crontab任务
+	// router.GET("/agent/crontab", web.ListCrontabView)                  // 查看本地crontab任务
+	router.Run(":3000")
+
+}
+
+// // 定时向proxy代理上报存活状态
+// func agent_report() {
+
+// }
+
+// 定时任务用于处理异步任务
+// func clean_task_result() {
+// 	c := cron.New()
+// 	c.AddFunc("@every 5s", func() { fmt.Println("Every 5 second, starting an hour thirty from now") })
+// 	c.Start()
+// 	defer c.Stop()
+// 	select {}
+// }
+
 func main() {
-	//orig := "http://c.biancheng.net/golang/"
-	//key := "12345678123456781234567812345678"
-	//fmt.Println("原文：", orig)
-	//encryptCode := cryption.AesEncrypt(orig, key)
-	//fmt.Println("密文：", encryptCode)
-	//decryptCode := cryption.AesDecrypt(encryptCode, key)
-	//fmt.Println("解密结果：", decryptCode)
-
-
-	//cmd := &core.CmdInfo{}
-	//cmd.Interpreter = "/bin/bash"
-	//cmd.ExecuteUser = "asher"
-	//cmd.ExecutePath = "/opt"
-	//cmd.ExecuteScript = "ifconfig && echo $1 $2 && whoami && pwd"
-	//cmd.ExecuteScriptParam = "p1 p2"
-	//cmd.ScriptTimeOut = 10
-	//fmt.Println(cmd.ExecuteCMD())
-
-	cmdTime := &core.CmdInfo{}
-	cmdTime.Interpreter = "/bin/bash"
-	cmdTime.ExecuteUser = "asher"
-	cmdTime.ExecutePath = "/opt"
-	cmdTime.ExecuteScript = "sleep 10"
-	cmdTime.ExecuteScriptParam = ""
-	cmdTime.ScriptTimeOut = 2
-	fmt.Println(cmdTime.ExecuteCMDTimeOut())
+	// err := config.LoadConfiguration()
+	// if err != nil {
+	// 	log.Fatal("load config failed")
+	// }
+	// go clean_task_result()
+	gin_web()
+	// go task_queue()
+	// go agent_report()
 }

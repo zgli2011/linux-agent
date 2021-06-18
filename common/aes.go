@@ -1,4 +1,4 @@
-package cryption
+package common
 
 import (
 	"bytes"
@@ -44,12 +44,14 @@ func AesDecrypt(cryted string, key string) string {
 	orig = PKCS7UnPadding(orig)
 	return string(orig)
 }
+
 //补码
 func PKCS7Padding(ciphertext []byte, blocksize int) []byte {
 	padding := blocksize - len(ciphertext)%blocksize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(ciphertext, padtext...)
 }
+
 //去码
 func PKCS7UnPadding(origData []byte) []byte {
 	length := len(origData)
