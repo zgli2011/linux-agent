@@ -1,17 +1,20 @@
-package common
+package utils
 
 import (
 	"math/rand"
 	"time"
 	"unsafe"
 )
+
 var src = rand.NewSource(time.Now().UnixNano())
+
 const (
 	letterIdxBits = 6                    // 6 bits to represent a letter index
 	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
-	letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	letterBytes   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
+
 func RandString(n int) string {
 	b := make([]byte, n)
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
@@ -29,5 +32,3 @@ func RandString(n int) string {
 
 	return *(*string)(unsafe.Pointer(&b))
 }
-
-

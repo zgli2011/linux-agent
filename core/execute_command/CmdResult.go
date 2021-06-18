@@ -1,4 +1,4 @@
-package ExecuteCommand
+package execute_command
 
 // type CmdResultList struct {
 // 	CmdResultList map[string]*ScriptSyncResponse

@@ -52,10 +52,10 @@ msg | string | 是 | 0 | 任务状态
 请求参数
 参数名 | 参数类型 | 是否必填 | 示例 | 说明
 ---|---|---|---|---
-command_before | string | 是 | cd /tmp&&ls | 文件传输前执行命令
-command_before_user | string | 是 | root | 文件传输前执行命令用户
-command_after | string | 是 | cd /tmp&&ls | 文件传输后执行命令
-command_after_user | string | 是 | root | 文件传输后执行命令用户
+bcommand | string | 是 | cd /tmp&&ls | 文件传输前执行命令
+bcommand_user | string | 是 | root | 文件传输前执行命令用户
+acommand | string | 是 | cd /tmp&&ls | 文件传输后执行命令
+acommand_user | string | 是 | root | 文件传输后执行命令用户
 ip |string | 是 | 1.1.1.1 | 本地标示IP
 task_id |string | 是 | f32ed3 | 任务ID
 file_list | object[] |  |  | 文件传输列表
