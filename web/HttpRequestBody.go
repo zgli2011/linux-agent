@@ -56,16 +56,16 @@ type FileResponse struct {
 	ACommandStderr   string `json:"acommand_stderr"`
 	IP               string `json:"ip"`
 	TaskID           int64  `json:"task_id"`
-	FileList         []*struct {
-		FileID   int    `json:"file_id"`
-		Path     string `json:"path"`
-		User     string `json:"user"`
-		Group    string `json:"group"`
-		Content  string `json:"content"`
-		Name     string `json:"name"`
-		MD5Check bool   `json:"md5_check"`
-		MD5      string `json:"md5"`
-		Result   bool   `json:"result"`
-		Msg      string `json:"msg"`
-	} `json:"file_list"`
+	FileList         []File
+}
+
+type File struct {
+	FileID  int    `json:"file_id"`
+	Path    string `json:"path"`
+	User    string `json:"user"`
+	Group   string `json:"group"`
+	Content string `json:"content"`
+	Name    string `json:"name"`
+	Result  bool   `json:"result"`
+	Msg     string `json:"msg"`
 }

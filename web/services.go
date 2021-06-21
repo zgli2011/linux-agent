@@ -2,6 +2,8 @@ package web
 
 import (
 	"agent/core/execute_command"
+	"agent/utils"
+	"path"
 	"time"
 )
 
@@ -65,16 +67,56 @@ func FileTransferService(file_body FileBody) FileResponse {
 	fileResponse.TaskID = file_body.TaskID
 
 	// 执行前置动作，如果失败直接返回
-	exit_code, stdout, stderr := execute_command.ExecuteShellTimeOut(file_body.ACommand_user, file_body.BCommand, 10)
+	exit_code, stdout, stderr := execute_command.ExecuteShellTimeOut(file_body.BCommandUser, file_body.BCommand, 10)
 	fileResponse.BCommandExitCore = exit_code
 	fileResponse.BCommandStdout = stdout
 	fileResponse.BCommandStderr = stderr
 	if exit_code != 0 {
 		// 退出
+		for _, file := range file_body.FileList {
+			var f File
+			f.FileID = file.FileID
+			f.Path = file.Path
+			f.User = file.User
+			f.Group = file.Group
+			f.Content = file.Content
+			f.Name = file.Name
+			f.Result = false
+			f.Msg = "pass"
+			fileResponse.FileList = append(fileResponse.FileList, f)
+		}
+		fileResponse.ACommandExitCore = -1
+		fileResponse.ACommandStdout = ""
+		fileResponse.ACommandStderr = ""
 	}
 	// 检查原来文件是否存在，如果不存在直接上传，如果文件存在，则看是否需要校验md5值，如果需要则校验md5，否则直接上传
 
 	// 文件传输
+	for _, file := range file_body.FileList {
+		var f File
+		f.FileID = file.FileID
+		f.Path = file.Path
+		f.User = file.User
+		f.Group = file.Group
+		f.Content = file.Content
+		f.Name = file.Name
+		file_path := path.Join(file.Path, file.Name)
+		if file.MD5Check && utils.MD5Value(file.Content) != file.MD5 { // 如果开启了文件校验，但是校验不通过则直接退出
+			f.Result = false
+			f.Msg = "md5校验失败"
+		} else { // 存放文件
+
+		}
+
+		f.Result = false
+		f.Msg = "pass"
+		fileResponse.FileList = append(fileResponse.FileList, f)
+	}
 
 	// 执行后置动作
+	exit_code, stdout, stderr = execute_command.ExecuteShellTimeOut(file_body.ACommand_user, file_body.ACommand, 10)
+	fileResponse.ACommandExitCore = exit_code
+	fileResponse.ACommandStdout = stdout
+	fileResponse.ACommandStderr = stderr
+	return fileResponse
 }

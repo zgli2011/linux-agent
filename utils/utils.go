@@ -6,13 +6,20 @@ import (
 	"os"
 )
 
-// 判断目录是否存在
+func CheckFile(path string) bool {
+	return CheckDirOrFileExist(path)
+}
+
 func CheckDir(path string) bool {
-	if _, err := os.Stat(path); err == nil {
-		return true
-	} else {
-		return false
+	return CheckDirOrFileExist(path)
+}
+
+// 判断目录/文件是否存在
+func CheckDirOrFileExist(path string) bool {
+	if _, err := os.Stat(path); err != nil {
+		return os.IsExist(err)
 	}
+	return true
 }
 
 // 判断目录是否存在， 不存在则创建目录
@@ -26,10 +33,6 @@ func CheckDirAndCreate(path string) bool {
 			return false
 		}
 	}
-}
-
-func CheckFile(file string) bool {
-	return true
 }
 
 func GetLocalIP4() []string {
