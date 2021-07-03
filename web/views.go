@@ -31,7 +31,7 @@ func ScriptAsyncView(c *gin.Context) {
 		return
 	}
 	scriptResponse := ScriptAsyncService(request_data)
-	c.JSON(200, scriptResponse)
+	c.JSON(http.StatusOK, scriptResponse)
 }
 
 // TODO: 文件传输

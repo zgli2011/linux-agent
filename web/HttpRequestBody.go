@@ -6,7 +6,7 @@ type ScriptBody struct {
 	User        string `json:"user" binding:"required"`
 	Content     string `json:"content" binding:"required"`
 	Param       string `json:"param"`
-	TimeOut     int64  `json:"timeout" binding:"required, gt=0, dive"`
+	TimeOut     int64  `json:"timeout" validate:"required||integer=1,300"`
 	IP          string `json:"ip" binding:"required"`
 	TaskID      string `json:"task_id" binding:"required"`
 }

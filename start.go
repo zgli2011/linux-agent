@@ -1,6 +1,7 @@
 package main
 
 import (
+	"agent/core/execute_command"
 	"agent/web"
 
 	"github.com/gin-gonic/gin"
@@ -37,12 +38,16 @@ func gin_web() {
 // }
 
 func main() {
-	// err := config.LoadConfiguration()
-	// if err != nil {
-	// 	log.Fatal("load config failed")
-	// }
-	// go clean_task_result()
+	// 启动web项目
 	gin_web()
+	// 初始化队列
+	execute_command.NewDataContainer(100)
+	// 启动执行队列
+	go execute_command.ScriptExecuteQueue()
+	// a := queue.NewDataContainer(1000)
+	// b := a.Pop()
+	// fmt.Println(b)
+	// go script_execute_queue()
 	// go task_queue()
 	// go agent_report()
 }
